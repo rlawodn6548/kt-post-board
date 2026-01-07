@@ -1,0 +1,51 @@
+version: '2.1'
+services:
+  article-database:
+    image: postgres:latest
+    container_name: article-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB:       "article_dev"
+    volumes:
+      - ./article-init.sql:/docker-entrypoint-initdb.d/article-init.sql
+#      - ./article-data.sql:/docker-entrypoint-initdb.d/article-data.sql
+    networks:
+      backend:
+        aliases:
+          - "database"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  article-service:
+    image: kt.article/article-service:0.0.1-SNAPSHOT
+    container_name: article-service
+    environment:
+      PROFILE: "dev"
+#      CONFIGSERVER_URI: "http://configserver:8071"
+#      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "5432"
+      ENCRYPT_KEY: "IMSYMMETRIC"
+    depends_on:
+      article-database:
+        condition: service_healthy
+#      configserver:
+#        condition: service_started
+#      kafkaserver:
+#        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+volumes:
+  esdata1:
+    driver: local
+networks:
+  backend:
+    driver: bridge

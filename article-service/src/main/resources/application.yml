@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: article-service
+#  profiles:
+#    active: dev
+#  cloud:
+#    config:
+#      uri: http://configserver:8071
+  datasource:
+    url: jdbc:postgresql://database:5432/article_dev
+    username: postgres
+    password: postgres

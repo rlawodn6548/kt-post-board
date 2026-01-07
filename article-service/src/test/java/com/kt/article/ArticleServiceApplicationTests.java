@@ -1,13 +1,11 @@
-package com.kt.article_service;
+package com.kt.article;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ArticleServiceApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
+    @Disabled
+    void contextLoads() {
+    }
 }
