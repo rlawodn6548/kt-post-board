@@ -1,4 +1,4 @@
-package kt.article.config;
+package com.kt.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,10 +1,10 @@
-package kt.article.config;
+package com.kt.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ConfigServerApplicationTests {
+class GatewayServerApplicationTests {
 
 	@Test
 	void contextLoads() {

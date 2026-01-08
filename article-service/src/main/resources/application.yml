@@ -10,3 +10,13 @@ spring:
     url: jdbc:postgresql://database:5432/article_dev
     username: postgres
     password: postgres
+
+# Eureka 설정
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eurekaserver:8070/eureka/
