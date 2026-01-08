@@ -1,11 +1,3 @@
-# Spring JPA ??
-spring:
-  datasource:
-    url: jdbc:postgresql://database:5432/article_dev
-    username: postgres
-    password: postgres
-
-# Eureka ??
 eureka:
   instance:
     preferIpAddress: true
@@ -14,3 +6,13 @@ eureka:
     registerWithEureka: true
     serviceUrl:
       defaultZone: http://eurekaserver:8070/eureka/
+
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      discovery.locator:
+        enabled: true
+        lowerCaseServiceId: true

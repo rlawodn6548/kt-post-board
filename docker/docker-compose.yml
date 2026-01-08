@@ -45,20 +45,29 @@ services:
         aliases:
           - "eurekaserver"
 
+  gateway-server:
+    image: kt.article/gateway-server:0.0.1-SNAPSHOT
+    container_name: gateway-server
+    ports:
+      - "8072:8072"
+    depends_on:
+      config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "gateway"
+
   article-service:
     image: kt.article/article-service:0.0.1-SNAPSHOT
     container_name: article-service
-#    environment:
-#      PROFILE: "dev"
-#      CONFIGSERVER_URI: "http://configserver:8071"
-#      CONFIGSERVER_PORT: "8071"
-#      DATABASESERVER_PORT: "5432"
-#      ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       article-database:
         condition: service_healthy
-#      config-server:
-#        condition: service_started
+      config-server:
+        condition: service_started
 #      kafkaserver:
 #        condition: service_started
     ports:
