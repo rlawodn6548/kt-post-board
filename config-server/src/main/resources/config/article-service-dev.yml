@@ -1,22 +1,16 @@
+# Spring JPA ??
 spring:
-  application:
-    name: article-service
-#  profiles:
-#    active: dev
-#  cloud:
-#    config:
-#      uri: http://configserver:8071
   datasource:
     url: jdbc:postgresql://database:5432/article_dev
     username: postgres
     password: postgres
 
-# Eureka 설정
+# Eureka ??
 eureka:
   instance:
     preferIpAddress: true
-  client:
     registerWithEureka: true
+  client:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eurekaserver:8070/eureka/

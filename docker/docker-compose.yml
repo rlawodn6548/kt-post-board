@@ -37,9 +37,9 @@ services:
     container_name: eureka-server
     ports:
       - "8070:8070"
-#    depends_on:
-#      config-server:
-#        condition: service_started
+    depends_on:
+      config-server:
+        condition: service_started
     networks:
       backend:
         aliases:
@@ -48,12 +48,12 @@ services:
   article-service:
     image: kt.article/article-service:0.0.1-SNAPSHOT
     container_name: article-service
-    environment:
-      PROFILE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT: "8071"
-      DATABASESERVER_PORT: "5432"
-      ENCRYPT_KEY: "IMSYMMETRIC"
+#    environment:
+#      PROFILE: "dev"
+#      CONFIGSERVER_URI: "http://configserver:8071"
+#      CONFIGSERVER_PORT: "8071"
+#      DATABASESERVER_PORT: "5432"
+#      ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       article-database:
         condition: service_healthy
@@ -66,26 +66,26 @@ services:
     networks:
       - backend
 
-  article-service2:
-    image: kt.article/article-service:0.0.1-SNAPSHOT
-    container_name: article-service2
-    environment:
-      PROFILE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT: "8071"
-      DATABASESERVER_PORT: "5432"
-      SERVER_PORT: 8888
-    depends_on:
-      article-database:
-        condition: service_healthy
-    #      config-server:
-    #        condition: service_started
-    #      kafkaserver:
-    #        condition: service_started
-    ports:
-      - "8088:8088"
-    networks:
-      - backend
+#  article-service2:
+#    image: kt.article/article-service:0.0.1-SNAPSHOT
+#    container_name: article-service2
+#    environment:
+#      PROFILE: "dev"
+#      CONFIGSERVER_URI: "http://configserver:8071"
+#      CONFIGSERVER_PORT: "8071"
+#      DATABASESERVER_PORT: "5432"
+#      SERVER_PORT: 8888
+#    depends_on:
+#      article-database:
+#        condition: service_healthy
+#    #      config-server:
+#    #        condition: service_started
+#    #      kafkaserver:
+#    #        condition: service_started
+#    ports:
+#      - "8088:8088"
+#    networks:
+#      - backend
 
 volumes:
   esdata1:
