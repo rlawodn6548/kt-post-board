@@ -3,6 +3,8 @@ package com.kt.article.service;
 import com.kt.article.model.Article;
 import com.kt.article.repository.ArticleRepository;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +17,16 @@ import java.util.UUID;
 public class ArticleService {
     @Autowired
     private ArticleRepository repository;
+    private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
 
 
 
     // 게시글 작성
     @Transactional
     public Article createArticle(String title, String content, String author) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Create Article - {}", content);
+        }
         Article article = Article.builder()
                     .id(UUID.randomUUID().toString())
                     .title(title)
