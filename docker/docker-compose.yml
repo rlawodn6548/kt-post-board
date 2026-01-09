@@ -15,12 +15,47 @@ services:
     networks:
       backend:
         aliases:
-          - "database"
+          - "articledatabase"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  comment-database:
+    image: postgres:latest
+    container_name: comment-database
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "comment_dev"
+    volumes:
+      - ./comment-init.sql:/docker-entrypoint-initdb.d/comment-init.sql
+    #      - ./article-data.sql:/docker-entrypoint-initdb.d/article-data.sql
+    networks:
+      backend:
+        aliases:
+          - "commentdatabase"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  comment-service:
+    image: kt.article/comment-service:0.0.1-SNAPSHOT
+    container_name: comment-service
+    ports:
+      - "8061:8061"
+    depends_on:
+      config-server:
+        condition: service_started
+      comment-database:
+        condition: service_healthy
+    networks:
+      - backend
 
   config-server:
     image: kt.article/config-server:0.0.1-SNAPSHOT

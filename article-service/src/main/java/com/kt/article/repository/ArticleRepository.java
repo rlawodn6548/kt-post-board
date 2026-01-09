@@ -1,10 +1,10 @@
 package com.kt.article.repository;
 
 import com.kt.article.model.Article;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ArticleRepository extends CrudRepository<Article, String> {
+public interface ArticleRepository extends JpaRepository<Article, String> {
 }

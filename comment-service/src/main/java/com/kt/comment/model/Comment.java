@@ -1,6 +1,5 @@
-package com.kt.article.model;
+package com.kt.comment.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,19 +11,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter @ToString @Builder
 @Entity @EntityListeners(AuditingEntityListener.class)
-@Table(name="article")
-public class Article {
+@Table(name="comment")
+public class Comment {
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name="id", nullable=false)
     private String id;
 
-    @Column(name="title", nullable = false)
-    private String title;
+    @Column(name="article_id", nullable=false)
+    private String articleId;
 
-    @Column(name="content")
+    @Column(name="content", nullable=false)
     private String content;
 
-    @Column(name = "author", nullable=false)
+    @Column(name="author", nullable=false)
     private String author;
 
     @CreatedDate
@@ -32,6 +31,6 @@ public class Article {
     private LocalDateTime createTime;
 
     @LastModifiedDate
-    @Column(name="modified_time", nullable = false)
+    @Column(name="modified_time", nullable=false)
     private LocalDateTime modifiedTime;
 }

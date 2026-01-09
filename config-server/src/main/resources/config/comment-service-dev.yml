@@ -1,7 +1,7 @@
 # Spring JPA
 spring:
   datasource:
-    url: jdbc:postgresql://articledatabase:5432/article_dev
+    url: jdbc:postgresql://commentdatabase:5432/comment_dev
     username: postgres
     password: postgres
 
