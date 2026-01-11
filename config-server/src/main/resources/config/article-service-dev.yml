@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://articledatabase:5432/article_dev
     username: postgres
     password: postgres
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
 
 # Eureka
 eureka:

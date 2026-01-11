@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://commentdatabase:5432/comment_dev
     username: postgres
     password: postgres
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
 
 # Eureka
 eureka:
