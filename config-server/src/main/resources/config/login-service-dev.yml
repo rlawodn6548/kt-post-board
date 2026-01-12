@@ -1,0 +1,24 @@
+# Spring JPA
+spring:
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
+
+# Eureka
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://eurekaserver:8070/eureka/
+
+# Keycloak
+keycloak:
+  auth-server-url: http://keycloak:8099
+  realm: kt-realm
+  client-id: login-service
+  admin-cli-secret: DWSybdId5ZBHZGLYuWYl0w7hm58NlYmr

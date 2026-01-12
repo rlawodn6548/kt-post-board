@@ -20,6 +20,8 @@
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <resilience4j.version>1.5.0</resilience4j.version>
 	</properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

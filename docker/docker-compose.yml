@@ -44,11 +44,30 @@ services:
       timeout: 5s
       retries: 5
 
+  login-database:
+    image: postgres:latest
+    container_name: login-database
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "login_dev"
+    networks:
+      backend:
+        aliases:
+          - "logindatabase"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   comment-service:
     image: kt.article/comment-service:0.0.1-SNAPSHOT
     container_name: comment-service
     ports:
-      - "8061:8061"
+      - "8060:8060"
     depends_on:
       config-server:
         condition: service_started
@@ -131,6 +150,18 @@ services:
 #    networks:
 #      - backend
 
+  login-service:
+    image: kt.article/login-service:0.0.1-SNAPSHOT
+    container_name: login-service
+    depends_on:
+      login-database:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    ports:
+      - "8090:8090"
+    networks:
+      - backend
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
     container_name: elasticsearch
@@ -193,6 +224,38 @@ services:
       backend:
         aliases:
           - "zipkin"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://logindatabase:5432/login_dev
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+#      - KC_HOSTNAME=keycloak
+      - KC_HOSTNAME_PORT=8099
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_ADMIN_STRICT=false
+      - KC_HTTP_ENABLED=true
+      - KC_HTTP_PORT=8099
+      - KC_FEATURES=scripts,upload-scripts
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8099:8099"
+    depends_on:
+      login-database:
+        condition: service_healthy
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
 
 volumes:
   esdata1:

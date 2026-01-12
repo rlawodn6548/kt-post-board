@@ -1,9 +1,9 @@
 server:
-  port: 8060
+  port: 8090
 
 spring:
   application:
-    name: comment-service
+    name: login-service
   profiles:
     active: dev
   cloud:
