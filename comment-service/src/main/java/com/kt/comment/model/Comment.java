@@ -26,6 +26,9 @@ public class Comment {
     @Column(name="author", nullable=false)
     private String author;
 
+    @Column(name = "author_id", nullable=false)
+    private String authorId;
+
     @CreatedDate
     @Column(name="create_time", nullable=false)
     private LocalDateTime createTime;

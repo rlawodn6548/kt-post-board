@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS public.comment
     article_id    varchar(100) NOT NULL,
     content      text         NOT NULL,
     author       varchar(100) NOT NULL,
+    author_id    varchar(50) NOT NULL,
     create_time   timestamp    NOT NULL,
     modified_time timestamp    NOT NULL,
 

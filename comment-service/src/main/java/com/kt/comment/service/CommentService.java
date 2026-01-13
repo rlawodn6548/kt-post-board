@@ -18,12 +18,13 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public Comment createComment(String articleId, String content, String author) {
+    public Comment createComment(String articleId, String content, String author, String authorId) {
         Comment comment = Comment.builder() // @Builder가 엔티티에 있다고 가정
                 .id(UUID.randomUUID().toString()) // String ID인 경우 보통 UUID 생성
                 .articleId(articleId)
                 .content(content)
                 .author(author)
+                .authorId(authorId)
                 .build();
 
         return repository.save(comment);

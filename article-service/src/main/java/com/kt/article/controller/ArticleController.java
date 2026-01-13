@@ -82,7 +82,7 @@ public class ArticleController {
         String currentUserId = jwt.getSubject();
 
         if (logger.isInfoEnabled()) {
-            logger.info("[UpdateArticle] articleId : {}, authorId : {}, userId : {}, role : {}", articleId, article.getAuthorId(), currentUserId, roles.toString());
+            logger.info("[ArticleController] articleId : {}, authorId : {}, userId : {}, role : {}", articleId, article.getAuthorId(), currentUserId, roles.toString());
         }
 
         boolean isAdmin = roles.contains("kt-admin");
