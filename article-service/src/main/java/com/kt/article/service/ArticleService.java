@@ -23,7 +23,7 @@ public class ArticleService {
 
     // 게시글 작성
     @Transactional
-    public Article createArticle(String title, String content, String author) {
+    public Article createArticle(String title, String content, String author, String authorId) {
         if (logger.isInfoEnabled()) {
             logger.info("Create Article - {}", content);
         }
@@ -32,6 +32,7 @@ public class ArticleService {
                     .title(title)
                     .content(content)
                     .author(author)
+                    .authorId(authorId)
                     .build();
         return repository.save(article);
     }

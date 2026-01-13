@@ -9,6 +9,12 @@ spring:
   sleuth:
     sampler:
       percentage: 1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8099/realms/kt-realm
+          jwk-set-uri: http://keycloak:8099/realms/kt-realm/protocol/openid-connect/certs
 
 # Eureka
 eureka:

@@ -107,8 +107,6 @@ services:
     depends_on:
       config-server:
         condition: service_started
-      eureka-server:
-        condition: service_started
     networks:
       backend:
         aliases:
