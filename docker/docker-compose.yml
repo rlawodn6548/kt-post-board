@@ -11,7 +11,7 @@ services:
       POSTGRES_DB:       "article_dev"
     volumes:
       - ./article-init.sql:/docker-entrypoint-initdb.d/article-init.sql
-#      - ./article-data.sql:/docker-entrypoint-initdb.d/article-data.sql
+#      - ./article-data.sql:/docker-entrypoint-initdb.d/a`rticle-data.sql
     networks:
       backend:
         aliases:
@@ -73,6 +73,10 @@ services:
         condition: service_started
       comment-database:
         condition: service_healthy
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
     networks:
       - backend
 
@@ -107,6 +111,10 @@ services:
     depends_on:
       config-server:
         condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
     networks:
       backend:
         aliases:
@@ -120,8 +128,10 @@ services:
         condition: service_healthy
       config-server:
         condition: service_started
-#      kafkaserver:
-#        condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
     ports:
       - "8080:8080"
     networks:
@@ -155,6 +165,10 @@ services:
       login-database:
         condition: service_healthy
       config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
         condition: service_started
     ports:
       - "8090:8090"

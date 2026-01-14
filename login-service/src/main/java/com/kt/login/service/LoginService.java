@@ -2,15 +2,14 @@ package com.kt.login.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +51,7 @@ public class LoginService {
         return restTemplate.postForObject(url, request, Map.class);
     }
 
+    @Transactional
     public void register(String username, String email, String password) {
         String adminToken = getAdminToken(); // 사용자 생성을 위한 관리자 토큰 획득
         String url = String.format("%s/admin/realms/%s/users", authServerUrl, realm);
@@ -73,7 +73,11 @@ public class LoginService {
         user.put("credentials", List.of(credentials));
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(user, headers);
-        restTemplate.postForLocation(url, request);
+        URI uri = restTemplate.postForLocation(url, request);
+
+        String location = uri.getPath();
+        String userId = location.substring(location.lastIndexOf("/") + 1);
+        assignUserRole(headers, userId);
     }
 
     public void logout(String refreshToken) {
@@ -116,5 +120,30 @@ public class LoginService {
         }
 
         throw new RuntimeException("Keycloak 관리자 토큰을 가져오는 데 실패했습니다.");
+    }
+
+    private void assignUserRole(HttpHeaders headers, String userId) {
+        assingRole(headers, userId, "kt-user");
+    }
+
+    private void assignAdminRole(HttpHeaders headers, String userId) {
+        assingRole(headers, userId, "kt-admin");
+    }
+
+    private void assingRole(HttpHeaders headers, String userId, String roleName) {
+        // Role 정보 조회
+        String getRoleUrl = String.format("%s/admin/realms/%s/roles/%s", authServerUrl, realm, roleName);
+        ResponseEntity<Map> roleResponse = restTemplate.exchange(getRoleUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class);
+
+        // 사용자에게 Role 부여
+        Map<String, Object> roleInfo = roleResponse.getBody();
+        String roleMappingUrl = String.format("%s/admin/realms/%s/users/%s/role-mappings/realm", authServerUrl, realm, userId);
+        List<Map<String, Object>> rolesToAssign = List.of(Map.of(
+                "id", roleInfo.get("id"),     // 조회한 Role의 UUID
+                "name", roleInfo.get("name")  // Role의 이름 (user)
+        ));
+
+        HttpEntity<List<Map<String, Object>>> roleRequest = new HttpEntity<>(rolesToAssign, headers);
+        restTemplate.postForEntity(roleMappingUrl, roleRequest, Void.class);
     }
 }
