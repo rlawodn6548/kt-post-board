@@ -36,12 +36,20 @@ public class CommentController {
                 jwt.getClaimAsString("preferred_username"),
                 jwt.getSubject()
         );
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Create Comment {} by {}", comment.getId() , comment.getAuthor());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(comment));
     }
 
     // 특정 게시글의 모든 댓글 조회
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getCommentsByArticle(@RequestParam String articleId) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Get Comments by Article {}", articleId);
+        }
+
         List<CommentResponse> responses = commentService.getCommentsByArticle(articleId).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -54,6 +62,10 @@ public class CommentController {
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable String id,
             @RequestBody String newContent) { // 간단하게 내용만 받을 경우
+        if (logger.isInfoEnabled()) {
+            logger.info("Update Comments {}", id);
+        }
+
         Comment updated = null;
         if (isAuthorization(id, jwt)) {
             updated = commentService.updateComment(id, newContent);
@@ -65,6 +77,10 @@ public class CommentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Jwt jwt,
                                               @PathVariable String id) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Delete Comments {}", id);
+        }
+
         if (isAuthorization(id, jwt)) {
             commentService.deleteComment(id);
         }

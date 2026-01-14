@@ -34,12 +34,20 @@ public class ArticleController {
                 jwt.getClaimAsString("preferred_username"),
                 jwt.getSubject()
         );
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Create Article {} by {}", created.getId(), created.getAuthor());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     // 게시글 전체 조회
     @GetMapping
     public ResponseEntity<List<Article>> getAllArticles() {
+        if (logger.isInfoEnabled()) {
+            logger.info("Get All Articles");
+        }
+
         List<Article> articles = articleService.getAllArticles();
         return ResponseEntity.ok(articles);
     }
@@ -47,6 +55,10 @@ public class ArticleController {
     // 특정 게시글 조회
     @GetMapping("/{id}")
     public ResponseEntity<Article> getArticle(@PathVariable String id) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Get Article : {}", id);
+        }
+
         Article article = articleService.getArticle(id);
         return ResponseEntity.ok(article);
     }
@@ -57,6 +69,9 @@ public class ArticleController {
             @PathVariable String id,
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody ArticleRequest request) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Update Article {}", id);
+        }
         Article updated = null;
 
         if (isAuthorization(id, jwt)) {
@@ -69,6 +84,10 @@ public class ArticleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable String id,
                                               @AuthenticationPrincipal Jwt jwt) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Delete Article {}", id);
+        }
+
         if (isAuthorization(id, jwt)) {
             articleService.deleteArticle(id);
         }
