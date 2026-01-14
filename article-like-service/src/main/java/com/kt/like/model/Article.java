@@ -1,4 +1,4 @@
-package com.kt.article.model;
+package com.kt.like.model;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter @ToString @Builder
-@Entity @EntityListeners(AuditingEntityListener.class)
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name="article")
 public class Article {
     @Id

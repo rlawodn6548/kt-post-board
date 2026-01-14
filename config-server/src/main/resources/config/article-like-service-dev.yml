@@ -19,9 +19,10 @@ spring:
   cloud:
     stream:
       bindings:
-        output:
+        input:
           destination: articleLikeTopic
           content-type: application/json
+          group: article-like-service
       kafka:
         binder:
           zkNodes: kafka

@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS public.article
     content      text         NOT NULL,
     author       varchar(100) NOT NULL,
     author_id    varchar(50) NOT NULL,
+    looks        integer,
     create_time   timestamp    NOT NULL,
     modified_time timestamp    NOT NULL,
-
     CONSTRAINT article_pkey PRIMARY KEY (id)
 )
 TABLESPACE pg_default;

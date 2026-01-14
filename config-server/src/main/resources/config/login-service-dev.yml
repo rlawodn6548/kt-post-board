@@ -21,4 +21,4 @@ keycloak:
   auth-server-url: http://keycloak:8099
   realm: kt-realm
   client-id: login-service
-  admin-cli-secret: DWSybdId5ZBHZGLYuWYl0w7hm58NlYmr
+  admin-cli-secret: mT9gqTZWaEVNTPSvPe75px1vHF8uVkVa

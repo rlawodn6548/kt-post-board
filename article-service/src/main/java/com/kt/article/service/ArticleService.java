@@ -1,5 +1,6 @@
 package com.kt.article.service;
 
+import com.kt.article.message.MessageSourceBean;
 import com.kt.article.model.Article;
 import com.kt.article.repository.ArticleRepository;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,10 @@ import java.util.UUID;
 public class ArticleService {
     @Autowired
     private ArticleRepository repository;
+
+    @Autowired
+    private MessageSourceBean messageSource;
+
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
 
 
@@ -46,6 +51,7 @@ public class ArticleService {
     // 특정 게시글 상세 조회
     @Transactional(readOnly = true)
     public Article getArticle(String id) {
+        messageSource.publishArticleMessage("article", id);
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. ID: " + id));
     }
