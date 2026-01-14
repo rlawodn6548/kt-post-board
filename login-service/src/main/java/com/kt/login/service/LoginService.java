@@ -8,7 +8,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,6 @@ public class LoginService {
         return restTemplate.postForObject(url, request, Map.class);
     }
 
-    @Transactional
     public void register(String username, String email, String password) {
         String adminToken = getAdminToken(); // 사용자 생성을 위한 관리자 토큰 획득
         String url = String.format("%s/admin/realms/%s/users", authServerUrl, realm);
@@ -93,6 +91,24 @@ public class LoginService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         restTemplate.postForObject(url, request, String.class);
+    }
+
+    public void updateUserPassword(String userName, String newPassword) {
+        String adminToken = getAdminToken();
+        String userId = getUserIdByUsername(userName, adminToken);
+        String url = String.format("%s/admin/realms/%s/users/%s/reset-password", authServerUrl, realm, userId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> credentials = new HashMap<>();
+        credentials.put("type", "password");
+        credentials.put("value", newPassword);
+        credentials.put("temporary", false);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(credentials, headers);
+        restTemplate.put(url, request);
     }
 
     private String getAdminToken() {
@@ -145,5 +161,23 @@ public class LoginService {
 
         HttpEntity<List<Map<String, Object>>> roleRequest = new HttpEntity<>(rolesToAssign, headers);
         restTemplate.postForEntity(roleMappingUrl, roleRequest, Void.class);
+    }
+
+    private String getUserIdByUsername(String username, String adminToken) {
+        String url = String.format("%s/admin/realms/%s/users?username=%s&exact=true", authServerUrl, realm, username);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<List> response = restTemplate.exchange(url, HttpMethod.GET, entity, List.class);
+        List<Map<String, Object>> users = response.getBody();
+
+        if (users != null && !users.isEmpty()) {
+            return (String) users.get(0).get("id");
+        }
+
+        throw new RuntimeException("사용자를 찾을 수 없습니다.");
     }
 }

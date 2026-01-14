@@ -34,4 +34,10 @@ public class LoginController {
         loginService.logout(refreshToken);
         return ResponseEntity.ok("Logged out successfully");
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updatePassword(@RequestBody LoginDto dto) {
+        loginService.updateUserPassword(dto.getUsername(), dto.getPassword());
+        return ResponseEntity.ok("Update Password successfully");
+    }
 }
