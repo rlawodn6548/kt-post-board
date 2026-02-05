@@ -80,6 +80,26 @@ services:
     networks:
       - backend
 
+  comment-service2:
+    image: kt.article/comment-service:0.0.1-SNAPSHOT
+    container_name: comment-service2
+    ports:
+      - "8061:8061"
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: 8061
+    depends_on:
+      config-server:
+        condition: service_started
+      comment-database:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
+    networks:
+      - backend
+
   config-server:
     image: kt.article/config-server:0.0.1-SNAPSHOT
     container_name: config-server
@@ -103,24 +123,7 @@ services:
         aliases:
           - "eurekaserver"
 
-  gateway-server:
-    image: kt.article/gateway-server:0.0.1-SNAPSHOT
-    container_name: gateway-server
-    ports:
-      - "8072:8072"
-    depends_on:
-      config-server:
-        condition: service_started
-      eureka-server:
-        condition: service_started
-      zipkin:
-        condition: service_started
-      logstash:
-        condition: service_started
-    networks:
-      backend:
-        aliases:
-          - "gateway"
+
 
   article-service:
     image: kt.article/article-service:0.0.1-SNAPSHOT
@@ -139,26 +142,25 @@ services:
     networks:
       - backend
 
-#  article-service2:
-#    image: kt.article/article-service:0.0.1-SNAPSHOT
-#    container_name: article-service2
-#    environment:
-#      PROFILE: "dev"
-#      CONFIGSERVER_URI: "http://configserver:8071"
-#      CONFIGSERVER_PORT: "8071"
-#      DATABASESERVER_PORT: "5432"
-#      SERVER_PORT: 8888
-#    depends_on:
-#      article-database:
-#        condition: service_healthy
-#    #      config-server:
-#    #        condition: service_started
-#    #      kafkaserver:
-#    #        condition: service_started
-#    ports:
-#      - "8088:8088"
-#    networks:
-#      - backend
+  article-service2:
+    image: kt.article/article-service:0.0.1-SNAPSHOT
+    container_name: article-service2
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: 8081
+    depends_on:
+      article-database:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
 
   article-like-service:
     image: kt.article/article-like-service:0.0.1-SNAPSHOT
@@ -193,6 +195,27 @@ services:
       - "8090:8090"
     networks:
       - backend
+
+  login-service2:
+    image: kt.article/login-service:0.0.1-SNAPSHOT
+    container_name: login-service2
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: 8091
+    depends_on:
+      login-database:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
+    ports:
+      - "8091:8091"
+    networks:
+      - backend
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
     container_name: elasticsearch
@@ -251,6 +274,11 @@ services:
       - ES_HOSTS=http://elasticsearch:9300
     ports:
       - 9411:9411
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "9411" ]
+      interval: 5s   # 5초마다 체크
+      timeout: 5s    # 체크 타임아웃
+      retries: 10    # 최대 10번 시도
     networks:
       backend:
         aliases:
@@ -266,7 +294,6 @@ services:
       - KC_DB_URL=jdbc:postgresql://logindatabase:5432/login_dev
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=postgres
-#      - KC_HOSTNAME=keycloak
       - KC_HOSTNAME_PORT=8099
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_ADMIN_STRICT=false
@@ -323,6 +350,27 @@ services:
       backend:
         aliases:
           - "redis"
+
+  gateway-server:
+    image: kt.article/gateway-server:0.0.1-SNAPSHOT
+    container_name: gateway-server
+    ports:
+      - "8072:8072"
+    depends_on:
+      config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+      zipkin:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      logstash:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "gateway"
 volumes:
   esdata1:
     driver: local

@@ -3,7 +3,6 @@ package com.kt.login.controller;
 import com.kt.login.dto.LoginDto;
 import com.kt.login.dto.UserRegistrationDto;
 import com.kt.login.service.LoginService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -19,9 +19,6 @@ public class ArticleService {
     @Autowired
     private ArticleRepository repository;
 
-    @Autowired
-    private MessageSourceBean messageSource;
-
     private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
 
 
@@ -48,10 +45,9 @@ public class ArticleService {
         return repository.findAll();
     }
 
-    // 특정 게시글 상세 조회
+    // 게시글 상세 조회
     @Transactional(readOnly = true)
     public Article getArticle(String id) {
-        messageSource.publishArticleMessage("article", id);
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. ID: " + id));
     }
@@ -60,8 +56,12 @@ public class ArticleService {
     @Transactional
     public Article updateArticle(String id, String newTitle, String newContent) {
         Article article = getArticle(id);
-        article.setTitle(newTitle);
-        article.setContent(newContent);
+        if (newTitle != null) {
+            article.setTitle(newTitle);
+        }
+        if (newContent != null) {
+            article.setContent(newContent);
+        }
         repository.save(article);
         return article;
     }

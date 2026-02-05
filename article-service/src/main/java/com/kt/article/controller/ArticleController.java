@@ -1,6 +1,7 @@
 package com.kt.article.controller;
 
 import com.kt.article.dto.ArticleRequest;
+import com.kt.article.message.MessageSourceBean;
 import com.kt.article.model.Article;
 import com.kt.article.service.ArticleService;
 import org.slf4j.Logger;
@@ -21,6 +22,9 @@ import java.util.Map;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private MessageSourceBean messageSource;
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
@@ -60,6 +64,8 @@ public class ArticleController {
         }
 
         Article article = articleService.getArticle(id);
+        article.setLooks(article.getLooks()+1);
+        messageSource.publishArticleMessage("article", id);
         return ResponseEntity.ok(article);
     }
 
