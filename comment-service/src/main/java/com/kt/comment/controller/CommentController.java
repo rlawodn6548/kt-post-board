@@ -94,7 +94,8 @@ public class CommentController {
                 comment.getArticleId(),
                 comment.getContent(),
                 comment.getAuthor(),
-                comment.getCreateTime()
+                comment.getCreateTime(),
+                comment.getModifiedTime()
         );
     }
 

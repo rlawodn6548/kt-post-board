@@ -80,25 +80,25 @@ services:
     networks:
       - backend
 
-  comment-service2:
-    image: kt.article/comment-service:0.0.1-SNAPSHOT
-    container_name: comment-service2
-    ports:
-      - "8061:8061"
-    environment:
-      PROFILE: "dev"
-      SERVER_PORT: 8061
-    depends_on:
-      config-server:
-        condition: service_started
-      comment-database:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
-      zipkin:
-        condition: service_started
-    networks:
-      - backend
+#  comment-service2:
+#    image: kt.article/comment-service:0.0.1-SNAPSHOT
+#    container_name: comment-service2
+#    ports:
+#      - "8061:8061"
+#    environment:
+#      PROFILE: "dev"
+#      SERVER_PORT: 8061
+#    depends_on:
+#      config-server:
+#        condition: service_started
+#      comment-database:
+#        condition: service_healthy
+#      eureka-server:
+#        condition: service_started
+#      zipkin:
+#        condition: service_started
+#    networks:
+#      - backend
 
   config-server:
     image: kt.article/config-server:0.0.1-SNAPSHOT
@@ -142,25 +142,25 @@ services:
     networks:
       - backend
 
-  article-service2:
-    image: kt.article/article-service:0.0.1-SNAPSHOT
-    container_name: article-service2
-    environment:
-      PROFILE: "dev"
-      SERVER_PORT: 8081
-    depends_on:
-      article-database:
-        condition: service_healthy
-      config-server:
-        condition: service_started
-      eureka-server:
-        condition: service_started
-      zipkin:
-        condition: service_started
-    ports:
-      - "8081:8081"
-    networks:
-      - backend
+#  article-service2:
+#    image: kt.article/article-service:0.0.1-SNAPSHOT
+#    container_name: article-service2
+#    environment:
+#      PROFILE: "dev"
+#      SERVER_PORT: 8081
+#    depends_on:
+#      article-database:
+#        condition: service_healthy
+#      config-server:
+#        condition: service_started
+#      eureka-server:
+#        condition: service_started
+#      zipkin:
+#        condition: service_started
+#    ports:
+#      - "8081:8081"
+#    networks:
+#      - backend
 
   article-like-service:
     image: kt.article/article-like-service:0.0.1-SNAPSHOT
@@ -196,25 +196,25 @@ services:
     networks:
       - backend
 
-  login-service2:
-    image: kt.article/login-service:0.0.1-SNAPSHOT
-    container_name: login-service2
-    environment:
-      PROFILE: "dev"
-      SERVER_PORT: 8091
-    depends_on:
-      login-database:
-        condition: service_healthy
-      config-server:
-        condition: service_started
-      eureka-server:
-        condition: service_started
-      zipkin:
-        condition: service_started
-    ports:
-      - "8091:8091"
-    networks:
-      - backend
+#  login-service2:
+#    image: kt.article/login-service:0.0.1-SNAPSHOT
+#    container_name: login-service2
+#    environment:
+#      PROFILE: "dev"
+#      SERVER_PORT: 8091
+#    depends_on:
+#      login-database:
+#        condition: service_healthy
+#      config-server:
+#        condition: service_started
+#      eureka-server:
+#        condition: service_started
+#      zipkin:
+#        condition: service_started
+#    ports:
+#      - "8091:8091"
+#    networks:
+#      - backend
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
