@@ -1,5 +1,9 @@
 # Spring JPA
 spring:
+  datasource:
+    url: jdbc:postgresql://loginfailuredatabase:5432/login_failure_dev
+    username: postgres
+    password: postgres
   zipkin:
     baseUrl: http://zipkin:9411
   sleuth:

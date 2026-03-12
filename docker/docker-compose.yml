@@ -63,6 +63,27 @@ services:
       timeout: 5s
       retries: 5
 
+  login-failure-database:
+    image: postgres:latest
+    container_name: login-failure-database
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "login_failure_dev"
+    networks:
+      backend:
+        aliases:
+          - "loginfailuredatabase"        
+    volumes:
+      - ./login-failure.sql:/docker-entrypoint-initdb.d/login-failure.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   comment-service:
     image: kt.article/comment-service:0.0.1-SNAPSHOT
     container_name: comment-service

@@ -2,6 +2,7 @@ package com.kt.login.controller;
 
 import com.kt.login.dto.LoginDto;
 import com.kt.login.dto.UserRegistrationDto;
+import com.kt.login.exception.LoginFailedException;
 import com.kt.login.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -17,6 +19,14 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private LoginService loginService;
+
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<Map<String, Object>> handleLoginFailedException(LoginFailedException e) {
+        Map<String, Object> errorBody = new HashMap<>();
+        errorBody.put("message", e.getMessage());
+        errorBody.put("failureCount", e.getFailureCount());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorBody);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegistrationDto dto) {

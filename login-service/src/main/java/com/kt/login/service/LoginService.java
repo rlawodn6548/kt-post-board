@@ -1,11 +1,13 @@
 package com.kt.login.service;
 
+import com.kt.login.exception.LoginFailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -30,10 +32,15 @@ public class LoginService {
     private String clientSecret;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
-
+    private final LoginFailureService loginFailureService;
 
     public Map<String, Object> login(String username, String password) {
+        // 이미 5회 이상 실패한 경우 체크
+        int currentFailures = loginFailureService.getFailureCount(username);
+        if (currentFailures >= 5) {
+            throw new LoginFailedException("Account is locked due to 5 failed login attempts.", currentFailures);
+        }
+
         String url = String.format("%s/realms/%s/protocol/openid-connect/token", authServerUrl, realm);
 
         HttpHeaders headers = new HttpHeaders();
@@ -47,7 +54,19 @@ public class LoginService {
         map.add("password", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        return restTemplate.postForObject(url, request, Map.class);
+        
+        try {
+            Map<String, Object> result = restTemplate.postForObject(url, request, Map.class);
+            // 로그인 성공 시 실패 기록 초기화
+            if (currentFailures != 0) {
+                loginFailureService.resetFailure(username);
+            }
+            return result;
+        } catch (HttpClientErrorException e) {
+            // 로그인 실패 시 실패 횟수 증가
+            int failures = loginFailureService.incrementFailure(username);
+            throw new LoginFailedException("Invalid credentials.", failures);
+        }
     }
 
     public Map<String, Object> refreshToken(String refreshToken) {
