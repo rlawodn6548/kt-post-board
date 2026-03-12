@@ -23,10 +23,11 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeExchange(exchanges -> exchanges
-                .pathMatchers("/login-service/**").permitAll() // 공개 API 허용
-                .anyExchange().authenticated()         // 그 외 모든 요청은 토큰 필수
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeExchange(exchanges -> exchanges.pathMatchers("/login-service/**")
+                .permitAll() // 공개 API 허용
+                .anyExchange()
+                .authenticated()         // 그 외 모든 요청은 토큰 필수
             )
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(Customizer.withDefaults())        // JWT 검증 활성화

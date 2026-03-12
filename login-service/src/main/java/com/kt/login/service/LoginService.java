@@ -50,6 +50,22 @@ public class LoginService {
         return restTemplate.postForObject(url, request, Map.class);
     }
 
+    public Map<String, Object> refreshToken(String refreshToken) {
+        String url = String.format("%s/realms/%s/protocol/openid-connect/token", authServerUrl, realm);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "refresh_token");
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        map.add("refresh_token", refreshToken);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        return restTemplate.postForObject(url, request, Map.class);
+    }
+
     public void register(String username, String email, String password) {
         String adminToken = getAdminToken(); // 사용자 생성을 위한 관리자 토큰 획득
         String url = String.format("%s/admin/realms/%s/users", authServerUrl, realm);
