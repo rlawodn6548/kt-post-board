@@ -13,6 +13,8 @@ spring:
       ribbon:
         enabled: false
     gateway:
+      default-filters:
+        - PreserveHostHeader # 호스트 헤더 보존
       discovery.locator:
         enabled: true
         lowerCaseServiceId: true

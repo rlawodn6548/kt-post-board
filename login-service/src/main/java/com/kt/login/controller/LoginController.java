@@ -2,7 +2,9 @@ package com.kt.login.controller;
 
 import com.kt.login.dto.LoginDto;
 import com.kt.login.dto.UserRegistrationDto;
+import com.kt.login.entity.LoginFailure;
 import com.kt.login.exception.LoginFailedException;
+import com.kt.login.service.LoginFailureService;
 import com.kt.login.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +22,9 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private LoginFailureService loginFailureService;
 
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<Map<String, Object>> handleLoginFailedException(LoginFailedException e) {
@@ -110,5 +116,16 @@ public class LoginController {
     public ResponseEntity<String> updatePassword(@RequestBody LoginDto dto) {
         loginService.updateUserPassword(dto.getUsername(), dto.getPassword());
         return ResponseEntity.ok("Update Password successfully");
+    }
+
+    @GetMapping("/failures")
+    public ResponseEntity<List<LoginFailure>> getAllFailures() {
+        return ResponseEntity.ok(loginFailureService.getAllFailures());
+    }
+
+    @DeleteMapping("/failures/{userId}")
+    public ResponseEntity<Void> resetFailure(@PathVariable String userId) {
+        loginFailureService.resetFailure(userId);
+        return ResponseEntity.ok().build();
     }
 }

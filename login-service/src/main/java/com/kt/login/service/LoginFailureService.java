@@ -39,4 +39,8 @@ public class LoginFailureService {
                 .map(LoginFailure::getFailureCount)
                 .orElse(0);
     }
+
+    public java.util.List<LoginFailure> getAllFailures() {
+        return loginFailureRepository.findAll();
+    }
 }
