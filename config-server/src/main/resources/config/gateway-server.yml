@@ -16,8 +16,6 @@ spring:
       discovery.locator:
         enabled: true
         lowerCaseServiceId: true
-      default-filters:
-        - RemoveRequestHeader= Cookie, Set-Cookie
   zipkin:
     baseUrl: http://zipkin:9411
   sleuth:
