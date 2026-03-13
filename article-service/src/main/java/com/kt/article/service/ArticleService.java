@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,12 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public List<Article> getAllArticles() {
         return repository.findAll();
+    }
+
+    // 게시글 페이징 조회
+    @Transactional(readOnly = true)
+    public Page<Article> getArticlesPaged(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     // 게시글 상세 조회

@@ -7,6 +7,9 @@ import com.kt.article.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -53,6 +56,19 @@ public class ArticleController {
         }
 
         List<Article> articles = articleService.getAllArticles();
+        return ResponseEntity.ok(articles);
+    }
+
+    // 게시글 페이징 조회
+    @GetMapping("/paged")
+    public ResponseEntity<Page<Article>> getArticlesPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        if (logger.isInfoEnabled()) {
+            logger.info("Get Paged Articles - page: {}, size: {}", page, size);
+        }
+
+        Page<Article> articles = articleService.getArticlesPaged(PageRequest.of(page, size, Sort.by("createTime").descending()));
         return ResponseEntity.ok(articles);
     }
 
