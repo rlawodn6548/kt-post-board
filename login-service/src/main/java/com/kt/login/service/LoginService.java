@@ -1,5 +1,6 @@
 package com.kt.login.service;
 
+import com.kt.security.wrapper.InputValidator;
 import com.kt.login.exception.LoginFailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,10 @@ public class LoginService {
     private final LoginFailureService loginFailureService;
 
     public Map<String, Object> login(String username, String password) {
+        // DB 입력 전 검증 (Input Validation)
+        InputValidator.validateUsername(username);
+        InputValidator.validatePassword(password);
+
         // 이미 5회 이상 실패한 경우 체크
         int currentFailures = loginFailureService.getFailureCount(username);
         if (currentFailures >= 5) {
@@ -86,6 +91,11 @@ public class LoginService {
     }
 
     public void register(String username, String email, String password) {
+        // DB 입력 전 검증 (Input Validation)
+        InputValidator.validateUsername(username);
+        InputValidator.validateEmail(email);
+        InputValidator.validatePassword(password);
+
         String adminToken = getAdminToken(); // 사용자 생성을 위한 관리자 토큰 획득
         String url = String.format("%s/admin/realms/%s/users", authServerUrl, realm);
 
@@ -129,6 +139,10 @@ public class LoginService {
     }
 
     public void updateUserPassword(String userName, String newPassword) {
+        // DB 입력 전 검증 (Input Validation)
+        InputValidator.validateUsername(userName);
+        InputValidator.validatePassword(newPassword);
+
         String adminToken = getAdminToken();
         String userId = getUserIdByUsername(userName, adminToken);
         String url = String.format("%s/admin/realms/%s/users/%s/reset-password", authServerUrl, realm, userId);

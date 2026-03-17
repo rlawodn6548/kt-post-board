@@ -17,9 +17,11 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<esapi.version>2.2.3.1</esapi.version>
 	</properties>
 
     <modules>
+        <module>article-security-common</module>
         <module>article-service</module>
         <module>article-like-service</module>
         <module>comment-service</module>

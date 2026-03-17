@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.article.model.Article;
 import com.kt.article.repository.ArticleRepository;
+import com.kt.security.wrapper.InputValidator;
 
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,7 @@ public class ArticleService {
     // 게시글 작성
     @Transactional
     public Article createArticle(String title, String content, String author, String authorId) {
+        InputValidator.validateArticle(title, content);
         if (logger.isInfoEnabled()) {
             logger.info("Create Article - {}", content);
         }
@@ -64,6 +66,7 @@ public class ArticleService {
     // 게시글 수정 (Dirty Checking 활용)
     @Transactional
     public Article updateArticle(String id, String newTitle, String newContent) {
+        InputValidator.validateArticle(newTitle, newContent);
         Article article = getArticle(id);
         if (newTitle != null) {
             article.setTitle(newTitle);
